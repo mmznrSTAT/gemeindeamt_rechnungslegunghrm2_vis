@@ -3,17 +3,19 @@
 	//Parameter
 	const categories = ind,
 		values = ind,
+		variables = ["Neubewertung","Ressourcenausgleich","Aktivierungsgrenze"];
 		mapYear = 2019,
 		kanton = 'ZH',
 		projectionZH = 2056;
 
   let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/gemeindeamt_rechnungslegunghrm2_vis/';
   let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
-  let dataPath = 'data/Karten_HRM2_Daten_politische_Gemeinden.CSV.csv',
+  let dataPath = 'data/Karten_HRM2_Daten_politische_Gemeinden.csv',
   	//metaPath = 'data/meta.tsv',
   	mapPath = "data/GemeindeGrosseSeeOhneExklave_gen_epsg2056_F_KTZH_"+mapYear+".json";
 
 	if (location.protocol !== "file:") {
+			console.log(location.protocol)
 		 dataPath = productionBaseUrlData+dataPath;
 		 //metaPath = productionBaseUrlData+metaPath;
 			mapPath = productionBaseUrlData+mapPath;
@@ -122,14 +124,12 @@
   //   .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
     //.interpolate(d3.interpolateHsl);
 
-  var colorScale = d3.scaleSequential();
+  var colorScale;
 
-  if (ind.split('_')[0]=='1') {
-  	colorScale.interpolator(d3.interpolateBlues);
-  } else if (ind.split('_')[0]=='2') {
-  	colorScale.interpolator(d3.interpolateGreens);
-  } else if (ind.split('_')[0]=='3') {
-  	colorScale.interpolator(d3.interpolateGreys);
+  if (ind=='Neubewertung'||ind=='Ressourcenausgleich') {
+  	colorScale = d3.scaleOrdinal().range(['#5ec962','#3b528b']);
+  } else if (ind =='Aktivierungsgrenze') {
+  	colorScale = d3.scaleSequential().interpolator(d3.interpolateViridis);
   }
 
 
@@ -137,13 +137,13 @@
   var indikator = ind,
   	metaData;
 
-
 	//Daten laden
 	Promise.all([
-		d3.dsv(';',dataPath),
+		d3.dsv(',',dataPath),
 		d3.json(mapPath),
 		//d3.tsv(metaPath),
 	]).then(function(data) {
+
 		var mapData = data[1];
 		var gpData = data[0];
 		//metaData = data[2];
@@ -151,15 +151,16 @@
 		//metaData = metaData.filter(el => el.var_name == indikator)
 		//console.log(metaData);
 
-		var indExtent = d3.extent(gpData, d=> +d[value]);
+		var indExtent = d3.extent(gpData, d=> +d[values]);
 
-		indExtent[0] = Math.floor(indExtent[0]/5)*5;
+		//indExtent[0] = Math.floor(indExtent[0]/5)*5;
 
-		indExtent[1] = Math.ceil(indExtent[1]/5)*5;
+		//indExtent[1] = Math.ceil(indExtent[1]/5)*5;
 		console.log(indExtent);
 
 		colorScale
 			.domain(indExtent);
+
 
 
 
@@ -178,7 +179,11 @@
 	});
 
 	function legende(farbskala) {
-		var stepSize = 5;
+
+		var stepSize = 1;
+		if(ind=='Aktivierungsgrenze') {
+			stepSize = 10000;
+		}
 		var farbDataC = d3.range(farbskala.domain()[0], farbskala.domain()[1]+stepSize, stepSize).sort(d3.descending);
 			farbDataT = farbDataC,
 			rectH = 20,
@@ -297,8 +302,8 @@
 				.style('fill-opacity', 0.3)
 				.style('stroke-opacity', 0.3);
 
-			var mouseOverRW = (90*d3.max([2,metaData.length]))/scale,
-				mouseOverRH = 22+metaData.length*22;
+			var mouseOverRW = 200/scale,
+				mouseOverRH = 82/scale;
 			//Position Tooltip
 			var xPos = bbox.x+bbox.width/2,
 				yPos = bbox.y+bbox.height/2;
@@ -343,37 +348,34 @@
 
 			mouseOverT.append('text')
 				.attr('x', 2/scale)
-				.attr('y', 16/scale)
-				.style('font-size', 14/scale+'px')
+				.attr('y', 18/scale)
+				.style('font-size', 16/scale+'px')
 				.style('font-weight', 'bold')
 				.text(thisData.properties.GDE_N)
 				.style('font-family', 'Helvetica');
-			mouseOverT.append('text')
-				.attr('x', mouseOverRW-12)
-				.style('text-anchor','end')
-				.attr('y', 16/scale)
-				.style('font-size', 14/scale+'px')
-				.style('font-weight', 'bold')
-				.text(thisData.properties.data[indikator])
-				.style('font-family', 'Helvetica');
 
-			for (let i = 0;i<metaData.length;i++) {
-				mouseOverT.append('text')
+			for (let i = 0;i<variables.length;i++) {
+				let thisText = mouseOverT.append('text')
 					.attr('x', 2/scale)
 					.attr('y', 20/scale)
 					.attr('dy', 1.2*(i+1)+'em')
 					.style('font-size', 14/scale+'px')
-					.text(metaData[i].ugru_label)
+					.text(variables[i])
 					.style('font-family', 'Helvetica');
 
-				mouseOverT.append('text')
+				let thisValue = mouseOverT.append('text')
 					.attr('x', mouseOverRW-12)
 					.attr('y', 20/scale)
 					.attr('dy', 1.2*(i+1)+'em')
 					.style('font-size', 14/scale+'px')
 					.style('text-anchor','end')
-					.text(thisData.properties.data[metaData[i].ugru_var])
+					.text(d3.format(',')(thisData.properties.data[variables[i]]))
 					.style('font-family', 'Helvetica');
+
+				if (ind==variables[i]) {
+					thisText.style('font-weight', 'bold');
+					thisValue.style('font-weight', 'bold');
+				}
 
 			}
 		}
