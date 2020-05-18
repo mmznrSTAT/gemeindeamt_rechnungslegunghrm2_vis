@@ -1,4 +1,4 @@
-BFS_Nr,Gemeinde,Neubewertung,Ressourcenausgleich,Aktivierungsgrenze
+bfs,Gemeinde,Neubewertung,Ressourcenausgleich,Aktivierungsgrenze
 21,Adlikon,1,0,10000
 131,Adliswil,0,1,50000
 241,Aesch,0,1,30000

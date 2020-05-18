@@ -1,23 +1,21 @@
 
 	function render(ind) {
 	//Parameter
-	const categories = 'INDIKATOR_NAME',
-		values = 'INDIKATOR_VALUE',
-		indikatorID = 133,
+	const categories = ind,
+		values = ind,
 		mapYear = 2019,
-		jahr = 2018,
 		kanton = 'ZH',
 		projectionZH = 2056;
 
-  let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/covid19_haushalte_vis/';
+  let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/gemeindeamt_rechnungslegunghrm2_vis/';
   let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
-  let dataPath = 'data/HH_Gruppen_GemZH_2019.csv',
-  	metaPath = 'data/meta.tsv',
+  let dataPath = 'data/Karten_HRM2_Daten_politische_Gemeinden.CSV.csv',
+  	//metaPath = 'data/meta.tsv',
   	mapPath = "data/GemeindeGrosseSeeOhneExklave_gen_epsg2056_F_KTZH_"+mapYear+".json";
 
 	if (location.protocol !== "file:") {
 		 dataPath = productionBaseUrlData+dataPath;
-		 metaPath = productionBaseUrlData+metaPath;
+		 //metaPath = productionBaseUrlData+metaPath;
 			mapPath = productionBaseUrlData+mapPath;
 	}
 
@@ -119,7 +117,6 @@
 	};
 	d3.formatDefaultLocale(ch_DE);
 
-	var scale = 1;
 
   // var colorScale = d3.scaleOrdinal()
   //   .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
@@ -145,16 +142,16 @@
 	Promise.all([
 		d3.dsv(';',dataPath),
 		d3.json(mapPath),
-		d3.tsv(metaPath),
+		//d3.tsv(metaPath),
 	]).then(function(data) {
 		var mapData = data[1];
 		var gpData = data[0];
-		metaData = data[2];
+		//metaData = data[2];
 		console.log(gpData);
-		metaData = metaData.filter(el => el.var_name == indikator)
-		console.log(metaData);
+		//metaData = metaData.filter(el => el.var_name == indikator)
+		//console.log(metaData);
 
-		var indExtent = d3.extent(gpData, d=> +d[indikator]);
+		var indExtent = d3.extent(gpData, d=> +d[value]);
 
 		indExtent[0] = Math.floor(indExtent[0]/5)*5;
 
@@ -175,7 +172,7 @@
 		}
 		console.log(mapData)
 		renderMap(mapData);
-		colorMap(mapData,jahr);
+		colorMap(mapData);
 		legende(colorScale)
 
 	});
