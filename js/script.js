@@ -9,17 +9,16 @@
 		projectionZH = 2056;
 
   let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/gemeindeamt_rechnungslegunghrm2_vis/';
-  let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
-  let dataPath = 'data/Karten_HRM2_Daten_politische_Gemeinden.csv',
+  //let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
+  let dataPath = 'data/Karten_HRM2_Daten_politische_Gemeinden.CSV',
   	//metaPath = 'data/meta.tsv',
   	mapPath = "data/GemeindeGrosseSeeOhneExklave_gen_epsg2056_F_KTZH_"+mapYear+".json";
 
-	if (location.protocol !== "file:") {
-			console.log(location.protocol)
-		 dataPath = productionBaseUrlData+dataPath;
-		 //metaPath = productionBaseUrlData+metaPath;
-			mapPath = productionBaseUrlData+mapPath;
-	}
+	// if (location.protocol !== "file:") {
+	// 	 dataPath = productionBaseUrlData+dataPath;
+	// 	 //metaPath = productionBaseUrlData+metaPath;
+	// 		mapPath = productionBaseUrlData+mapPath;
+	// }
 
 	console.log(dataPath,mapPath);
 
@@ -222,11 +221,23 @@
 			.style('font-size', 14/scale+'px')
 			.attr('x', 30)
 			.attr('y', (d,i) => (i+1)*20+17)
-			.text( d => d);
+			.text(function(d) {
+				if (ind=="Aktivierungsgrenze") {
+					return d3.format(',')(d);
+				} else {
+					return String(d).replace('1','ja').replace('0', 'nein');
+				}
+			})
 
 		legText
 			.attr('y', i => i*20)
-			.text(d => d)
+			.text(function() {
+				if (ind=="Aktivierungsgrenze") {
+					d => d3.format(',')(d)
+				} else {
+					d => String(d).replace('1','ja').replace('0', 'nein')
+				}
+			})
 
 		legText.exit().remove();
 	}
@@ -369,7 +380,14 @@
 					.attr('dy', 1.2*(i+1)+'em')
 					.style('font-size', 14/scale+'px')
 					.style('text-anchor','end')
-					.text(d3.format(',')(thisData.properties.data[variables[i]]))
+					.text(function() {
+						if (thisData.properties.data[variables[i]]>1) {
+							return d3.format(',')(thisData.properties.data[variables[i]]);
+						} else {
+							return String(thisData.properties.data[variables[i]]).replace('1','ja').replace('0', 'nein');
+						}
+					})
+
 					.style('font-family', 'Helvetica');
 
 				if (ind==variables[i]) {
