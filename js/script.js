@@ -149,15 +149,20 @@
 		//metaData = metaData.filter(el => el.var_name == indikator)
 		//console.log(metaData);
 
-		var indExtent = d3.extent(gpData, d=> +d[values]);
+	
+		var flags = [];
 
-		//indExtent[0] = Math.floor(indExtent[0]/5)*5;
+		for(let i=0; i<gpData.length; i++) {
+		    if( flags[gpData[i][values]]) continue;
+		    flags[gpData[i][values]] = true;
+		    uniqueValues.push(gpData[i][values]);
+		}
+		uniqueValues.sort(function(a, b) {return d3.ascending(a, b)});
 
-		//indExtent[1] = Math.ceil(indExtent[1]/5)*5;
-		console.log(indExtent);
+		console.log(uniqueValues);
 
 		colorScale
-			.domain(indExtent);
+			.domain(uniqueValues);
 
 
 
