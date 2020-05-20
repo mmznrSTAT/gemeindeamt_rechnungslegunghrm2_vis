@@ -187,7 +187,7 @@
 		if(ind=='Aktivierungsgrenze') {
 			stepSize = 10000;
 		}
-		var farbDataC = d3.range(farbskala.domain()[0], farbskala.domain()[1]+stepSize, stepSize).sort(d3.descending);
+		var farbDataC = uniqueValues;
 			farbDataT = farbDataC,
 			rectH = 20,
 			rectW = 20;
