@@ -122,13 +122,12 @@
   // var colorScale = d3.scaleOrdinal()
   //   .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
     //.interpolate(d3.interpolateHsl);
-
-  var colorScale;
+  var colorScale, uniqueValues = [];
 
   if (ind=='Neubewertung'||ind=='Ressourcenausgleich') {
-  	colorScale = d3.scaleOrdinal().range(['#5ec962','#3b528b']);
+  	colorScale = d3.scaleOrdinal().range(['rgb(255,204,00)','rgb(0,118,189)']);
   } else if (ind =='Aktivierungsgrenze') {
-  	colorScale = d3.scaleSequential().interpolator(d3.interpolateViridis);
+  	colorScale = d3.scaleOrdinal().range(['rgb(0,59,94)','rgb(0,118,189)','rgb(95,169,213)','rgb(255,225,111)','rgb(255,204,0)']);
   }
 
 
