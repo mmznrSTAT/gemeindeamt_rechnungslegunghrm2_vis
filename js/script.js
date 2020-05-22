@@ -127,7 +127,7 @@
   if (ind=='Neubewertung'||ind=='Ressourcenausgleich') {
   	colorScale = d3.scaleOrdinal().range(['rgb(255,204,00)','rgb(0,118,189)']);
   } else if (ind =='Aktivierungsgrenze') {
-  	colorScale = d3.scaleOrdinal().range(['rgb(0,59,94)','rgb(0,118,189)','rgb(95,169,213)','rgb(255,225,111)','rgb(255,204,0)']);
+  	colorScale = d3.scaleOrdinal().range(['rgb(0,59,94)','rgb(42,100,135)','rgb(0,118,189)','rgb(95,169,213)','rgb(255,241,190)','rgb(255,225,111)','rgb(255,204,0)']);
   }
 
 
@@ -149,7 +149,7 @@
 		//metaData = metaData.filter(el => el.var_name == indikator)
 		//console.log(metaData);
 
-	
+
 		var flags = [];
 
 		for(let i=0; i<gpData.length; i++) {
