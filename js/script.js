@@ -8,17 +8,19 @@
 		kanton = 'ZH',
 		projectionZH = 2056;
 
+  let colorScale = d3.scaleOrdinal(), uniqueValues = [];
+
   let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/gemeindeamt_rechnungslegunghrm2_vis/';
   //let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
   let dataPath = 'data/Karten_HRM2_Daten_politische_Gemeinden.CSV',
   	//metaPath = 'data/meta.tsv',
   	mapPath = "data/GemeindeGrosseSeeOhneExklave_gen_epsg2056_F_KTZH_"+mapYear+".json";
 
-	// if (location.protocol !== "file:") {
-	// 	 dataPath = productionBaseUrlData+dataPath;
-	// 	 //metaPath = productionBaseUrlData+metaPath;
-	// 		mapPath = productionBaseUrlData+mapPath;
-	// }
+	if (location.protocol !== "file:") {
+	 	 dataPath = productionBaseUrlData+dataPath;
+	 	 //metaPath = productionBaseUrlData+metaPath;
+	 		mapPath = productionBaseUrlData+mapPath;
+	}
 
 	console.log(dataPath,mapPath);
 
@@ -122,12 +124,11 @@
   // var colorScale = d3.scaleOrdinal()
   //   .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
     //.interpolate(d3.interpolateHsl);
-  var colorScale, uniqueValues = [];
 
   if (ind=='Neubewertung'||ind=='Ressourcenausgleich') {
-  	colorScale = d3.scaleOrdinal().range(['rgb(255,204,00)','rgb(0,118,189)']);
+  	colorScale.range(['rgb(255,204,00)','rgb(0,118,189)']);
   } else if (ind =='Aktivierungsgrenze') {
-  	colorScale = d3.scaleOrdinal().range(['rgb(0,59,94)','rgb(42,100,135)','rgb(0,118,189)','rgb(95,169,213)','rgb(255,241,190)','rgb(255,225,111)','rgb(255,204,0)']);
+  	colorScale.range(['rgb(0,59,94)','rgb(42,100,135)','rgb(0,118,189)','rgb(95,169,213)','rgb(255,241,190)','rgb(255,225,111)','rgb(255,204,0)']);
   }
 
 
