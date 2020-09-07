@@ -321,10 +321,14 @@
 			//Position Tooltip
 			var xPos = bbox.x+bbox.width/2,
 				yPos = bbox.y+bbox.height/2;
+
 			//Korrektur, damit tooltip nicht über den Rand hinaus geht:
 			console.log(xPos+', '+width/2)
-			if (xPos/scale>width/2) {
+
+			if (xPos/scale>(width/2+40)) {
 				xPos = bbox.x+bbox.width/2-mouseOverRW
+			} else if (xPos/scale<(width/2+40)&&xPos/scale>(width/2-40)) {
+				xPos = bbox.x+bbox.width/2-mouseOverRW/2
 			}
 			if (yPos>80) {
 				yPos = bbox.y+bbox.height/2-mouseOverRH
