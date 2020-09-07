@@ -54,7 +54,7 @@
 		.attr('id', 'desc');
 
 	var svgMapGr = svgMap.append('g').attr('id', 'svgMapGr');
-	var legendeGr = svgMap.append('g').attr('id','legendeGr').attr('transform', 'translate('+(width/2+180)+','+(-10)+')scale('+scale+')');
+	var legendeGr = svgMap.append('g').attr('id','legendeGr').attr('transform', 'translate('+(width-80)+','+(-10)+')scale('+scale+')');
 
 	var mapPfade = d3.select('#svgMap').append('g').attr('id', 'mapPfade').attr('transform', 'translate('+(10)+','+(0)+')');
 
@@ -154,7 +154,7 @@
 		var flags = [];
 
 		for(let i=0; i<gpData.length; i++) {
-		    if( flags[gpData[i][values]]) continue;
+		    if(flags[gpData[i][values]]) continue;
 		    flags[gpData[i][values]] = true;
 		    uniqueValues.push(gpData[i][values]);
 		}
@@ -312,8 +312,6 @@
 		function mouseOver(thisData, that, bbox, flag) {
 			var thisBfs = thisData.properties.GDE_ID;
 
-
-
 			d3.select('#karte').selectAll('path.gemeinden')
 				.style('fill-opacity', 0.3)
 				.style('stroke-opacity', 0.3);
@@ -324,7 +322,8 @@
 			var xPos = bbox.x+bbox.width/2,
 				yPos = bbox.y+bbox.height/2;
 			//Korrektur, damit tooltip nicht über den Rand hinaus geht:
-			if (xPos>transX) {
+			console.log(xPos+', '+width/2)
+			if (xPos/scale>width/2) {
 				xPos = bbox.x+bbox.width/2-mouseOverRW
 			}
 			if (yPos>80) {
@@ -481,7 +480,7 @@
 		transX = (width+80)/2;
 		mapFit('gemeinde');
 
-		legendeGr.attr('transform', 'translate('+(width/2+150)+','+(-20)+')scale('+scale+')')
+		legendeGr.attr('transform', 'translate('+(width-80)+','+(-10)+')scale('+scale+')')
 	}
 
 	// Call the resize function whenever a resize event occurs
